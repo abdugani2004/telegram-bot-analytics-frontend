@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ring-accent: 16 185 129;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+@layer components {
+  .glass-panel {
+    @apply rounded-2xl border border-slate-200/70 bg-white/80 shadow-soft backdrop-blur-sm dark:border-slate-700/70 dark:bg-slate-900/70;
+  }
+
+  .lift-card {
+    @apply transition duration-300 ease-out;
+  }
+
+  .lift-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px -22px rgba(15, 23, 42, 0.5);
+  }
+
+  .nav-pill {
+    @apply relative overflow-hidden rounded-xl px-3 py-2 text-sm font-medium transition duration-300;
+  }
+
+  .nav-pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(16, 185, 129, 0.18), rgba(14, 165, 233, 0.14));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .nav-pill:hover::before {
+    opacity: 1;
+  }
+
+  .btn-gradient {
+    @apply relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-4 py-2 text-sm font-semibold text-white transition-all duration-300;
+    background: linear-gradient(120deg, #0ea5e9, #10b981);
+  }
+
+  .btn-gradient::after {
+    content: "";
+    position: absolute;
+    inset: -120% 30% auto -30%;
+    height: 240%;
+    background: rgba(255, 255, 255, 0.28);
+    transform: rotate(16deg);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-gradient:hover::after {
+    transform: translateX(220%) rotate(16deg);
+  }
+}
