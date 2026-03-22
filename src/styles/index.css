@@ -4,21 +4,53 @@
 
 :root {
   --ring-accent: 16 185 129;
+  color: #1f2937;
+  background: #f7f1e8;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   font-family: "Manrope", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(244, 222, 195, 0.55), transparent 32%),
+    radial-gradient(circle at top right, rgba(224, 190, 150, 0.32), transparent 24%),
+    linear-gradient(180deg, #fbf7f2 0%, #f4ede3 100%);
+  color: #1f2937;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+html.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(51, 65, 85, 0.42), transparent 30%),
+    radial-gradient(circle at top right, rgba(30, 41, 59, 0.36), transparent 26%),
+    linear-gradient(180deg, #020617 0%, #0f172a 52%, #111827 100%);
+  color: #e5e7eb;
+}
+
+::selection {
+  background: rgba(180, 140, 104, 0.28);
+  color: #1f2937;
+}
+
+html.dark ::selection {
+  background: rgba(148, 163, 184, 0.26);
+  color: #f8fafc;
 }
 
 @layer components {
   .glass-panel {
-    @apply rounded-2xl border border-slate-200/70 bg-white/80 shadow-soft backdrop-blur-sm dark:border-slate-700/70 dark:bg-slate-900/70;
+    @apply rounded-[28px] border border-stone-200/80 bg-stone-50/80 shadow-soft backdrop-blur-md dark:border-slate-700/70 dark:bg-slate-900/70;
   }
 
   .lift-card {
@@ -26,19 +58,25 @@ body {
   }
 
   .lift-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 40px -22px rgba(15, 23, 42, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 26px 55px -28px rgba(68, 44, 18, 0.32);
   }
 
   .nav-pill {
-    @apply relative overflow-hidden rounded-xl px-3 py-2 text-sm font-medium transition duration-300;
+    @apply relative overflow-hidden rounded-2xl px-3 py-2 text-sm font-medium transition duration-300;
+  }
+
+  @media (max-width: 767px) {
+    .nav-pill {
+      @apply rounded-xl px-3 py-2 text-xs;
+    }
   }
 
   .nav-pill::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(120deg, rgba(16, 185, 129, 0.18), rgba(14, 165, 233, 0.14));
+    background: linear-gradient(120deg, rgba(180, 140, 104, 0.2), rgba(224, 190, 150, 0.16));
     opacity: 0;
     transition: opacity 0.25s ease;
   }
@@ -48,8 +86,9 @@ body {
   }
 
   .btn-gradient {
-    @apply relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-4 py-2 text-sm font-semibold text-white transition-all duration-300;
-    background: linear-gradient(120deg, #0ea5e9, #10b981);
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300;
+    background: linear-gradient(135deg, #c98d54, #b56a43);
+    box-shadow: 0 18px 40px -22px rgba(181, 106, 67, 0.85);
   }
 
   .btn-gradient::after {
@@ -64,5 +103,13 @@ body {
 
   .btn-gradient:hover::after {
     transform: translateX(220%) rotate(16deg);
+  }
+
+  .surface-outline {
+    @apply rounded-[24px] border border-stone-200/70 bg-white/50 shadow-soft backdrop-blur-sm dark:border-slate-700/70 dark:bg-slate-900/50;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center rounded-full border border-stone-200 bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-600 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300;
   }
 }

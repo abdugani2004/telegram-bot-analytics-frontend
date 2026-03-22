@@ -7,11 +7,11 @@ export const LanguageSwitcher = () => {
   const { locale, setLocale } = useI18n();
 
   return (
-    <div className="flex items-center gap-1 rounded-xl border border-slate-300/80 bg-white/70 p-1 dark:border-slate-700 dark:bg-slate-900/70">
+    <div className="flex items-center gap-0.5 rounded-2xl border border-stone-200/80 bg-white/80 p-0.5 shadow-sm sm:gap-1 sm:p-1 dark:border-slate-700 dark:bg-slate-900/70">
       {locales.map((item) => (
         <button
           key={item}
-          className={`rounded-lg px-2.5 py-1 text-xs font-semibold uppercase transition ${locale === item ? "bg-emerald-500 text-white" : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"}`}
+          className={`rounded-xl px-2.5 py-1.5 text-[10px] font-semibold uppercase leading-none transition sm:px-3 sm:text-xs ${locale === item ? "bg-emerald-500 text-white shadow-sm" : "text-slate-600 hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-slate-800"}`}
           onClick={() => setLocale(item)}
           type="button"
         >
