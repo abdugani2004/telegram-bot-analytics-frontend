@@ -4,6 +4,11 @@ Frontend dashboard for monitoring Telegram bot analytics with a clean SaaS-style
 
 This app lets a user connect a bot by `username` or `token`, then view key analytics like users, messages, revenue, uptime, and recent activity in a responsive dashboard.
 
+## About
+AboutBot Analytics Frontend is the client-side interface for a Telegram bot analytics product. It is designed to help founders, operators, and product teams quickly understand bot performance through a simple and polished analytics workspace.
+
+The current frontend focuses on fast onboarding, clean data presentation, responsive layouts, and a more premium product feel than a typical internal admin dashboard.
+
 ## Preview
 - Clean analytics workspace with a premium dashboard layout
 - Responsive navigation optimized for both desktop and mobile
@@ -100,6 +105,27 @@ npm run preview
 - The app expects a working backend API reachable through `VITE_API_BASE_URL`.
 - `recentActivity` supports flexible event rendering through optional `eventCode` and `params`.
 - ESLint is configured to ignore generated files like `dist`.
+
+## Deployment
+For production deployment:
+
+1. Set `VITE_API_BASE_URL` to your production backend URL.
+2. Run `npm install`.
+3. Run `npm run build`.
+4. Deploy the generated `dist/` folder to your hosting provider.
+
+This project can be deployed to platforms like Vercel, Netlify, Cloudflare Pages, or any static hosting environment that serves the Vite build output.
+
+## Contributing
+Contributions are welcome if you want to improve UI quality, performance, accessibility, or frontend architecture.
+
+Recommended flow:
+
+1. Create a feature branch from `main`.
+2. Make focused changes.
+3. Run `npm run lint`.
+4. Run `npm run build`.
+5. Open a pull request with a short explanation of what changed and why.
 
 ## Repository Scripts
 - `npm run dev` starts the Vite dev server
