@@ -4,6 +4,19 @@ Frontend dashboard for monitoring Telegram bot analytics with a clean SaaS-style
 
 This app lets a user connect a bot by `username` or `token`, then view key analytics like users, messages, revenue, uptime, and recent activity in a responsive dashboard.
 
+## Preview
+- Clean analytics workspace with a premium dashboard layout
+- Responsive navigation optimized for both desktop and mobile
+- Guided onboarding flow for connecting a Telegram bot
+- Dedicated analytics sections for users, messages, revenue, and health
+- Light and dark theme support for a more polished product feel
+
+## Why This UI
+- Built to feel like a modern SaaS product, not a default admin panel
+- Focused on readability, spacing, and mobile usability
+- Designed for fast scanning of metrics and charts
+- Structured so the frontend can keep growing as the startup evolves
+
 ## Features
 - Responsive dashboard optimized for desktop and mobile
 - Light and dark theme toggle
@@ -76,6 +89,12 @@ npm run preview
 3. Frontend sends the bot identity to the backend API.
 4. Dashboard renders analytics returned by the backend.
 5. User can switch between overview, user, message, revenue, and health views.
+
+## UI Highlights
+- Premium glass-style dashboard panels with warm light theme styling
+- Mobile-friendly activity feed and compact navigation
+- Reusable metric cards and chart containers for consistent design
+- Lazy-loaded pages and split bundles for a lighter initial load
 
 ## Notes
 - The app expects a working backend API reachable through `VITE_API_BASE_URL`.
