@@ -1,49 +1,89 @@
 # AboutBot Analytics Frontend
 
-React + TypeScript + Vite dashboard for Telegram bot analytics monitoring.
+Frontend dashboard for monitoring Telegram bot analytics with a clean SaaS-style UI.
 
-## Stack
+This app lets a user connect a bot by `username` or `token`, then view key analytics like users, messages, revenue, uptime, and recent activity in a responsive dashboard.
+
+## Features
+- Responsive dashboard optimized for desktop and mobile
+- Light and dark theme toggle
+- Bot connection flow with guided onboarding
+- Overview, users, messages, revenue, and health views
+- Metric cards, charts, loading states, and error handling
+- Recent activity history with mobile-friendly card layout
+- Bundle splitting for faster initial loading
+
+## Tech Stack
 - React 19
 - TypeScript
 - Vite
 - Tailwind CSS
+- React Router
 - Recharts
+- Axios
 
-## Structure
-- `src/components` reusable cards/charts/tables
-- `src/pages` top-level pages
-- `src/services` API clients
-- `src/hooks` data hooks
+## Project Structure
+- `src/components` reusable UI, charts, tables, and bot setup blocks
+- `src/layouts` main dashboard shell
+- `src/pages` route-level screens
+- `src/hooks` frontend state and data hooks
+- `src/services` API client logic
+- `src/styles` global styles
 - `src/types` shared frontend types
-- `src/layouts` dashboard layout
+- `src/i18n` localization setup
 
 ## Environment
-Copy `.env.example` to `.env`.
+Create a local `.env` file from `.env.example`.
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000
 ```
 
-## Run
+## Local Development
+Install dependencies:
+
 ```bash
 npm install
+```
+
+Start the dev server:
+
+```bash
 npm run dev
 ```
 
-## Current frontend flow
-- User first enters a bot username or bot token.
-- Frontend stores that bot identity locally and opens a bot-specific dashboard view.
-- Frontend sends that bot identity to the backend API and renders the real dashboard response.
-- `recentActivity` supports future localized events via optional `eventCode` and `params` fields.
+Run lint:
 
-## Build
+```bash
+npm run lint
+```
+
+Create a production build:
+
 ```bash
 npm run build
 ```
 
-The UI includes:
-- responsive sidebar + header
-- metrics cards
-- growth/messages/revenue charts
-- loading and error states
-- recent activity table
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Product Flow
+1. User opens the app and connects a Telegram bot.
+2. Frontend stores the selected bot identity locally.
+3. Frontend sends the bot identity to the backend API.
+4. Dashboard renders analytics returned by the backend.
+5. User can switch between overview, user, message, revenue, and health views.
+
+## Notes
+- The app expects a working backend API reachable through `VITE_API_BASE_URL`.
+- `recentActivity` supports flexible event rendering through optional `eventCode` and `params`.
+- ESLint is configured to ignore generated files like `dist`.
+
+## Repository Scripts
+- `npm run dev` starts the Vite dev server
+- `npm run build` builds the app for production
+- `npm run preview` previews the production build
+- `npm run lint` runs ESLint
