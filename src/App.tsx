@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import { useBotIdentity } from "@/hooks/useBotIdentity";
 import { useOwnerAuth } from "@/hooks/useOwnerAuth";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 const BotIdentityForm = lazy(async () => ({
   default: (await import("@/components/bot/BotIdentityForm")).BotIdentityForm
@@ -27,6 +27,7 @@ const LandingPage = lazy(async () => ({
 const App = () => {
   const { botIdentity, setBotIdentity, clearBotIdentity } = useBotIdentity();
   const { ownerAuth, setOwnerAuth, clearOwnerAuth } = useOwnerAuth();
+  const navigate = useNavigate();
   const isReady = Boolean(ownerAuth?.apiKey && botIdentity);
   const activeBotIdentity = botIdentity ?? undefined;
 
@@ -56,11 +57,71 @@ const App = () => {
           />
           {isReady && activeBotIdentity ? (
             <>
-              <Route element={<DashboardPage botIdentity={activeBotIdentity} onChangeBot={clearBotIdentity} view="overview" />} path="/overview" />
-              <Route element={<DashboardPage botIdentity={activeBotIdentity} onChangeBot={clearBotIdentity} view="users" />} path="/users" />
-              <Route element={<DashboardPage botIdentity={activeBotIdentity} onChangeBot={clearBotIdentity} view="messages" />} path="/messages" />
-              <Route element={<DashboardPage botIdentity={activeBotIdentity} onChangeBot={clearBotIdentity} view="revenue" />} path="/revenue" />
-              <Route element={<DashboardPage botIdentity={activeBotIdentity} onChangeBot={clearBotIdentity} view="health" />} path="/health" />
+              <Route
+                element={
+                  <DashboardPage
+                    botIdentity={activeBotIdentity}
+                    onChangeBot={() => {
+                      clearBotIdentity();
+                      navigate("/workspace");
+                    }}
+                    view="overview"
+                  />
+                }
+                path="/overview"
+              />
+              <Route
+                element={
+                  <DashboardPage
+                    botIdentity={activeBotIdentity}
+                    onChangeBot={() => {
+                      clearBotIdentity();
+                      navigate("/workspace");
+                    }}
+                    view="users"
+                  />
+                }
+                path="/users"
+              />
+              <Route
+                element={
+                  <DashboardPage
+                    botIdentity={activeBotIdentity}
+                    onChangeBot={() => {
+                      clearBotIdentity();
+                      navigate("/workspace");
+                    }}
+                    view="messages"
+                  />
+                }
+                path="/messages"
+              />
+              <Route
+                element={
+                  <DashboardPage
+                    botIdentity={activeBotIdentity}
+                    onChangeBot={() => {
+                      clearBotIdentity();
+                      navigate("/workspace");
+                    }}
+                    view="revenue"
+                  />
+                }
+                path="/revenue"
+              />
+              <Route
+                element={
+                  <DashboardPage
+                    botIdentity={activeBotIdentity}
+                    onChangeBot={() => {
+                      clearBotIdentity();
+                      navigate("/workspace");
+                    }}
+                    view="health"
+                  />
+                }
+                path="/health"
+              />
               <Route element={<AccountPage />} path="/account" />
               <Route element={<BillingPage />} path="/billing" />
             </>

@@ -12,6 +12,14 @@ const moneyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0
 });
 
+const getUsagePercentage = (used: number, limit: number) => {
+  if (limit <= 0) {
+    return 0;
+  }
+
+  return Math.min((used / limit) * 100, 100);
+};
+
 export const AccountPage = () => {
   const [account, setAccount] = useState<AccountSummary | null>(null);
   const [bots, setBots] = useState<OwnerBotSummary[]>([]);
@@ -54,8 +62,8 @@ export const AccountPage = () => {
   }
 
   const usage = account.usage;
-  const botsUsagePct = Math.min((usage.usage.totalBots / usage.limits.maxBots) * 100, 100);
-  const eventsUsagePct = Math.min((usage.usage.monthlyEvents / usage.limits.monthlyEvents) * 100, 100);
+  const botsUsagePct = getUsagePercentage(usage.usage.totalBots, usage.limits.maxBots);
+  const eventsUsagePct = getUsagePercentage(usage.usage.monthlyEvents, usage.limits.monthlyEvents);
 
   return (
     <div className="space-y-6">
