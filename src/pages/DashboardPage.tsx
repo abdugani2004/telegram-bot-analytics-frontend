@@ -1,4 +1,4 @@
-import { Activity, BadgeDollarSign, Bot, MessageSquareText, RefreshCw, Users } from "lucide-react";
+import { Activity, AlertTriangle, BadgeDollarSign, Bot, MessageSquareText, RefreshCw, TrendingUp, Users } from "lucide-react";
 import { GrowthLineChart } from "@/components/charts/GrowthLineChart";
 import { MessagesBarChart } from "@/components/charts/MessagesBarChart";
 import { RevenueAreaChart } from "@/components/charts/RevenueAreaChart";
@@ -84,6 +84,59 @@ export const DashboardPage = ({ botIdentity, onChangeBot, view }: DashboardPageP
     { icon: BadgeDollarSign, label: t.revenueToday, value: moneyFormatter.format(overview.revenueToday) },
     { icon: Activity, label: t.botStatus, value: overview.botStatus === "online" ? t.online : t.offline }
   ];
+  const weeklySummary = [
+    {
+      label: "Weekly growth",
+      value: `${overview.weeklyGrowthPct.toFixed(1)}%`,
+      tone: overview.weeklyGrowthPct >= 0 ? "text-emerald-600 dark:text-emerald-300" : "text-rose-600 dark:text-rose-300"
+    },
+    {
+      label: "Revenue this week",
+      value: moneyFormatter.format(overview.revenueThisWeek),
+      tone: "text-slate-900 dark:text-slate-100"
+    },
+    {
+      label: "Active users today",
+      value: numberFormatter.format(overview.activeUsersToday),
+      tone: "text-slate-900 dark:text-slate-100"
+    },
+    {
+      label: "Messages today",
+      value: numberFormatter.format(overview.messagesToday),
+      tone: "text-slate-900 dark:text-slate-100"
+    }
+  ];
+
+  const alerts = [
+    overview.botStatus === "offline"
+      ? { title: "Bot is offline", description: "Webhook traffic or polling looks interrupted. Check tracking and deployment health.", tone: "negative" as const }
+      : null,
+    overview.uptimePct < 99
+      ? { title: "Uptime slipped below target", description: `Current uptime is ${overview.uptimePct.toFixed(1)}%. Consider checking webhook failures and database latency.`, tone: "negative" as const }
+      : null,
+    overview.revenueThisWeek === 0 && overview.totalUsers > 0
+      ? { title: "Revenue is flat this week", description: "Users are active, but conversions are not moving yet. This is a strong place to test offers or checkout flow.", tone: "neutral" as const }
+      : null,
+    recentActivity.length < 3
+      ? { title: "Low signal from live events", description: "Very few new events arrived recently. If this is a live bot, it may need more traffic or event instrumentation.", tone: "neutral" as const }
+      : null
+  ].filter(Boolean) as Array<{ title: string; description: string; tone: "negative" | "neutral" }>;
+
+  const nextActions = [
+    overview.botStatus !== "online" ? "Re-check tracking and webhook status from the onboarding flow." : null,
+    overview.revenueThisWeek === 0 ? "Open Billing and upgrade monetization flow if you are testing paid funnels." : null,
+    overview.activeUsersToday === 0 ? "Send a campaign or trigger a bot broadcast to generate fresh usage." : null,
+    messages.messagesToday < 5 ? "Add more message events or connect a live Telegram bot token for stronger analytics." : null
+  ].filter(Boolean) as string[];
+  const healthPulse = messages.dailyMessagesSeries.slice(-7).map((point, index, source) => {
+    const maxValue = Math.max(...source.map((item) => item.value), 1);
+    const heightPct = Math.max((point.value / maxValue) * 100, 18);
+    return {
+      ...point,
+      heightPct,
+      uptimeProxy: Math.max(92, Math.min(100, overview.uptimePct - (maxValue - point.value) * 0.6)).toFixed(1)
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -135,6 +188,105 @@ export const DashboardPage = ({ botIdentity, onChangeBot, view }: DashboardPageP
           <MetricCard title={t.revenueMonth} value={moneyFormatter.format(overview.revenueThisMonth)} subtitle={t.currentMonth} status="positive" />
           <MetricCard title={t.botStatus} value={overview.botStatus === "online" ? t.online : t.offline} subtitle={`${t.api}: ${overview.apiHealth}`} status={overview.botStatus === "online" ? "positive" : "negative"} />
           <MetricCard title={t.uptimeRequests} value={`${overview.uptimePct.toFixed(1)}%`} subtitle={`${numberFormatter.format(overview.requestsToday)} ${t.requestsToday}`} status="neutral" />
+        </section>
+      ) : null}
+
+      {view === "overview" ? (
+        <section className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+          <article className="glass-panel p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-emerald-50 p-3 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-300">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="eyebrow">Weekly report</p>
+                <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-slate-100">Growth snapshot for this bot</h3>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {weeklySummary.map((item) => (
+                <div key={item.label} className="surface-outline rounded-[22px] p-4">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{item.label}</p>
+                  <p className={`mt-3 text-2xl font-semibold ${item.tone}`}>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article className="glass-panel p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-amber-50 p-3 text-amber-700 dark:bg-amber-950/20 dark:text-amber-300">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="eyebrow">Attention alerts</p>
+                <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-slate-100">What needs action next</h3>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {alerts.length > 0 ? (
+                alerts.map((alert) => (
+                  <div key={alert.title} className="surface-outline rounded-[22px] p-4">
+                    <p className={`text-sm font-semibold ${alert.tone === "negative" ? "text-rose-600 dark:text-rose-300" : "text-slate-900 dark:text-slate-100"}`}>
+                      {alert.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{alert.description}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="surface-outline rounded-[22px] p-4">
+                  <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-300">No urgent alerts</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Your current bot health and revenue signals look stable enough for now.</p>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-5 rounded-[22px] border border-stone-200/80 bg-white/50 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Suggested next actions</p>
+              <div className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                {nextActions.length > 0 ? nextActions.map((item) => <p key={item}>{item}</p>) : <p>Keep collecting live events and review Billing when you are ready to monetize growth.</p>}
+              </div>
+            </div>
+          </article>
+        </section>
+      ) : null}
+
+      {view === "overview" ? (
+        <section className="glass-panel p-5 sm:p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="eyebrow">Health pulse</p>
+              <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-slate-100">Last 7 signal bars</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                This mini chart uses recent message activity as a health proxy until a dedicated health history endpoint is added.
+              </p>
+            </div>
+            <div className="surface-outline rounded-2xl px-4 py-3 text-sm text-slate-700 dark:text-slate-200">
+              Live uptime proxy: {overview.uptimePct.toFixed(1)}%
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-7 gap-3">
+            {healthPulse.map((item) => (
+              <div key={item.date} className="flex flex-col items-center gap-3">
+                <div className="flex h-40 w-full items-end rounded-[24px] bg-stone-100/80 px-2 py-2 dark:bg-slate-800/80">
+                  <div
+                    className="w-full rounded-[18px] bg-gradient-to-t from-emerald-500 via-teal-500 to-cyan-400"
+                    style={{ height: `${item.heightPct}%` }}
+                    title={`${item.date}: ${item.uptimeProxy}% proxy`}
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                    {item.date.slice(5)}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{item.uptimeProxy}%</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       ) : null}
 

@@ -1,5 +1,24 @@
 import apiClient from "@/services/http";
-import { ApiResponse, BotIdentity, BotSetupPayload, BotSetupResponse, DashboardData, GrowthStats, MessagesStats, OverviewStats, RevenueStats, UsersStats } from "@/types/api";
+import {
+  ApiResponse,
+  AccountSummary,
+  AuthRegisterPayload,
+  AuthRegisterResponse,
+  BillingCheckoutPayload,
+  BillingCheckoutResponse,
+  BotIdentity,
+  BotSetupPayload,
+  BotSetupResponse,
+  DashboardData,
+  GrowthStats,
+  MessagesStats,
+  OwnerBotSummary,
+  OverviewStats,
+  PricingPlan,
+  RevenueStats,
+  SubscriptionSummary,
+  UsersStats
+} from "@/types/api";
 import axios from "axios";
 
 const unwrap = <T>(payload: ApiResponse<T>): T => {
@@ -33,6 +52,14 @@ const getApiErrorMessage = (error: unknown) => {
 };
 
 export const analyticsApi = {
+  registerOwner: async (payload: AuthRegisterPayload): Promise<AuthRegisterResponse> => {
+    try {
+      const response = await apiClient.post<ApiResponse<AuthRegisterResponse>>("/auth/register", payload);
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
   connectBot: async (botIdentity: BotIdentity): Promise<BotSetupResponse> => {
     try {
       const payload: BotSetupPayload = {
@@ -122,6 +149,46 @@ export const analyticsApi = {
           botValue: botIdentity.value
         }
       });
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
+  getAccountSummary: async (): Promise<AccountSummary> => {
+    try {
+      const response = await apiClient.get<ApiResponse<AccountSummary>>("/account/me");
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
+  getAccountBots: async (): Promise<OwnerBotSummary[]> => {
+    try {
+      const response = await apiClient.get<ApiResponse<OwnerBotSummary[]>>("/account/bots");
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
+  getPricing: async (): Promise<PricingPlan[]> => {
+    try {
+      const response = await apiClient.get<ApiResponse<PricingPlan[]>>("/billing/pricing");
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
+  createCheckout: async (payload: BillingCheckoutPayload): Promise<BillingCheckoutResponse> => {
+    try {
+      const response = await apiClient.post<ApiResponse<BillingCheckoutResponse>>("/billing/checkout", payload);
+      return unwrap(response.data);
+    } catch (error) {
+      throw new Error(getApiErrorMessage(error));
+    }
+  },
+  getSubscription: async (): Promise<SubscriptionSummary | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<SubscriptionSummary | null>>("/billing/subscription");
       return unwrap(response.data);
     } catch (error) {
       throw new Error(getApiErrorMessage(error));
